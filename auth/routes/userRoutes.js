@@ -6,7 +6,6 @@ const {
   loginUser,
   forgotPassword,
   resetPassword,
-  addMember,
   getUser
 } = require("../controllers/userController");
 require("../passport");
@@ -16,7 +15,6 @@ router.post("/signup", registerUser);
 router.post("/login", loginUser);
 router.post("/forgot-password", forgotPassword);
 router.post("/resetPassword", resetPassword);
-router.put("/addMember/:id", protect, addMember);
 router.get("/getUser", protect, getUser)
 
 // For Google account login
