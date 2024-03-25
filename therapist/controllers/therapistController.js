@@ -45,7 +45,22 @@ const getTherapist = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Get all therapists
+// @route   GET /therapist/all
+// @access  Public
+const getAllTherapists = asyncHandler(async (req, res) => {
+  const therapists = await Therapist.find({});
+
+  if (therapists) {
+    res.json(therapists);
+  } else {
+    res.status(404);
+    throw new Error("Therapist not found");
+  }
+});
+
 module.exports = {
   addTherapist,
   getTherapist,
+  getAllTherapists
 };

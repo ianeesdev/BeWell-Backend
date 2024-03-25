@@ -3,8 +3,7 @@ const router = express.Router();
 
 const {
   addAppointment,
-  getUpcomingAppointments,
-  getHistoryAppointments
+  getAppointments,
 } = require("../controllers/appointmentController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -12,10 +11,7 @@ const { protect } = require("../middleware/authMiddleware");
 // Add new appointment
 router.post("/add", addAppointment);
 
-// Get upcoming appointments
-router.get("/upcoming/:userId", getUpcomingAppointments);
-
-// Get history appointments
-router.get("/history/:userId", getHistoryAppointments);
+// Get all appointments
+router.get("/:userId", getAppointments);
 
 module.exports = router;

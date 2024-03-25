@@ -1,15 +1,17 @@
 const asyncHandler = require("express-async-handler");
 const Journal = require("../models/journalsModel");
 
-// @desc    Add a new journal entry
+// @desc    Add a new journal entry and get all journals for the user
 // @route   POST /journals/add
 // @access  Private
 const addJournal = asyncHandler(async (req, res) => {
   const { title, text, createdBy } = req.body;
 
-  const journal = await Journal.create({ title, text, createdBy });
+  await Journal.create({ title, text, createdBy });
 
-  res.status(201).json({ success: true, data: journal });
+  const userJournals = await Journal.find({ createdBy });
+
+  res.status(201).json({ data: userJournals });
 });
 
 // @desc    Delete a journal entry 
@@ -37,7 +39,7 @@ const getAllJournalsByUser = asyncHandler(async (req, res) => {
 
   const journals = await Journal.find({ createdBy: userId });
 
-  res.json({ success: true, data: journals });
+  res.status(200).json({ data: journals });
 });
 
 module.exports = {
