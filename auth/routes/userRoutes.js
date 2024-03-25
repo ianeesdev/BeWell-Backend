@@ -6,7 +6,8 @@ const {
   loginUser,
   forgotPassword,
   resetPassword,
-  getUser
+  getUser,
+  saveOnboardingResponses
 } = require("../controllers/userController");
 require("../passport");
 const { protect } = require("../middleware/authMiddleware");
@@ -15,7 +16,8 @@ router.post("/signup", registerUser);
 router.post("/login", loginUser);
 router.post("/forgot-password", forgotPassword);
 router.post("/resetPassword", resetPassword);
-router.get("/getUser", protect, getUser)
+router.get("/getUser", protect, getUser);
+router.post("/onboardingResponses", protect, saveOnboardingResponses)
 
 // For Google account login
 router.get(
@@ -26,20 +28,19 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:3000/login",  
+    failureRedirect: "http://localhost:3000/auth/login",  
   }), (req, res) => {
     const {user, token} = req.user;
     const userInfo = {
       _id: user._id,
-      fullName: user.fullName,
       email: user.email,
       isLoggedIn: true,
-      isMember: user.isMember,
+      onboarded: user.onboarded,
       token: token,
     };
 
     res.redirect(
-      `http://localhost:3000/oauth/redirect?user=${userInfo.token}`,
+      `http://localhost:3000/auth/redirect?user=${userInfo.token}`,
     )
   }
 );

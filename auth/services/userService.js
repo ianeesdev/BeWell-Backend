@@ -6,10 +6,9 @@ const nodemailer = require("nodemailer");
 const { config } = require("../config/settings");
 
 class UserService {
-
   // Register service
-  async registerUser(username, name, email, password) {
-    if (!username || !name || !email || !password) {
+  async registerUser(username, email, password) {
+    if (!username || !email || !password) {
       throw new Error("Please add all fields");
     }
 
@@ -23,7 +22,6 @@ class UserService {
 
     const user = await new User({
       username,
-      name,
       email,
       password: hashedPassword,
     }).save();
@@ -31,7 +29,6 @@ class UserService {
     if (user) {
       return {
         _id: user.id,
-        name: user.name,
         email: user.email,
         token: this.generateToken(user._id),
       };
@@ -53,8 +50,10 @@ class UserService {
     if (passwordMatched) {
       return {
         _id: user.id,
-        name: user.name,
+        name: user.username,
         email: user.email,
+        isLoggedIn: true,
+        onboarded: user.onboarded,
         token: this.generateToken(user._id),
       };
     } else {
@@ -105,24 +104,46 @@ class UserService {
     }
   }
 
-    // FGet User info service
-    async getUser(id) {
-      const user = await User.findById(id);
-  
-      if (!user) {
-        throw new Error("Invalid credentials");
-      }
-      return {
-        _id: user.id,
-        fullName: user.fullName,
-        email: user.email,
-        isLoggedIn: true,
-        isMember: user.isMember,
-        token: this.generateToken(user._id),
-      };
+  // Get User info service
+  async getUser(id) {
+    const user = await User.findById(id);
+
+    if (!user) {
+      throw new Error("Invalid credentials");
+    }
+    return {
+      _id: user.id,
+      name: user.username,
+      email: user.email,
+      isLoggedIn: true,
+      onboarded: user.onboarded,
+      token: this.generateToken(user._id),
+    };
+  }
+
+  // Save onboarding responses
+  async saveOnboardingResponses(userId, userResponses) {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new Error("User not found");
     }
 
-      // Generate OTP service
+    user.onboardingResponses = userResponses;
+    user.onboarded = true;
+    await user.save();
+
+    return {
+      _id: user.id,
+      name: user.username,
+      email: user.email,
+      isLoggedIn: true,
+      onboarded: user.onboarded,
+      token: this.generateToken(user._id),
+    };
+  }
+
+  // Generate OTP service
   async generateOTP(user) {
     // Generate a random 4-digit OTP
     const otpValue = Math.floor(1000 + Math.random() * 9000);
@@ -146,14 +167,14 @@ class UserService {
       service: "gmail",
       auth: {
         user: "devaneees@gmail.com",
-        pass: "eubi nkkv evpt ebxa",
+        pass: "brde gskv yihl cfot",
       },
     });
 
     var mailOptions = {
       from: "devaneees@gmail.com",
       to: user.email,
-      subject: "Porkbuns OTP Verification",
+      subject: "Be Well OTP Verification",
       html: `
         <p>Hello ${user.fullName},</p>
         <p>Your OTP is: <strong>${otp}</strong></p>

@@ -5,10 +5,10 @@ const userService = require("../services/userService");
 // @route   POST /auth/signup
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { username, name, email, password } = req.body;
+  const { username, email, password } = req.body;
 
   try {
-    const user = await userService.registerUser(username, name, email, password);
+    const user = await userService.registerUser(username, email, password);
     res.status(201).json(user);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -48,6 +48,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 // @access  Public
 const resetPassword = asyncHandler(async (req, res) => {
   const { id, token, password } = req.body;
+  console.log(id, token, password);
 
   try {
     const result = await userService.resetPassword(id, token, password);
@@ -71,10 +72,26 @@ const getUser = asyncHandler(async (req, res) => {
   }
 });
 
+
+// @desc    Save Onboarding Question
+// @route   POST /auth/onboardingResponses
+// @access  Private
+const saveOnboardingResponses = asyncHandler(async (req, res) => {
+  const { userId, onboardingResponses } = req.body;
+
+  try {
+    const response = await userService.saveOnboardingResponses(userId, onboardingResponses);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 module.exports = {
   registerUser,
   loginUser,
   resetPassword,
   forgotPassword,
-  getUser
+  getUser,
+  saveOnboardingResponses
 };

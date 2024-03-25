@@ -2,27 +2,26 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    googleId: String,
-    username: { 
-        type: String, 
-        required: true, 
-        unique: true 
+    username: {
+      type: String,
+      required: true,
+      unique: true,
     },
     name: {
       type: String,
-      required: [false, "Please add a name"],
+      requierd: [true, "Please add a name"],
     },
     image: {
       type: String,
     },
     email: {
       type: String,
-      required: [true, "Please add an email"],
+      requierd: [true, "Please add an email"],
       unique: true,
     },
     password: {
       type: String,
-      required: [true, "Please add a strong password"],
+      requierd: [true, "Please add a strong password"],
     },
     posts: [
       {
@@ -42,14 +41,8 @@ const userSchema = new mongoose.Schema(
     ],
     sessionId: {
       type: String,
-      default: "hi"
+      default: "hi",
     },
-    onboardingResponses: [
-      {
-        title: String,
-        selectedOption: String,
-      }
-    ]
   },
   {
     timestamps: true,
