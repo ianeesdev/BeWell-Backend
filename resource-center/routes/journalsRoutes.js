@@ -7,7 +7,7 @@ const { protect } = require("../middleware/authMiddleware");
 router.post("/add", addJournal);
 
 // Delete a journal entry
-router.delete("/delete/:journalId", deleteJournal);
+router.delete("/delete/:userId/:journalId", deleteJournal);
 
 // Get all journals
 router.get("/get/:userId", getAllJournalsByUser)

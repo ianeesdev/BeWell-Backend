@@ -3,11 +3,12 @@ const Group = require("../models/groupModel");
 const Post = require("../models/postModel");
 
 class PostService {
-  async createPost(text, image, author, groupId) {
+  async createPost(isAnonymous, text, image, author, groupId) {
     try {
       const groupIdObject = await Group.findOne({ _id: groupId }, { _id: 1 });
 
       const createdPost = await Post.create({
+        isAnonymous,
         text,
         image,
         author,
@@ -26,7 +27,7 @@ class PostService {
         });
       }
 
-      return createdPost;
+      return this.fetchPosts();
     } catch (error) {
       throw new Error(`Failed to create post: ${error.message}`);
     }

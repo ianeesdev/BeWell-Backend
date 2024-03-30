@@ -5,10 +5,10 @@ const postService = require("../services/postService");
 // @route   POST /community/createPost
 // @access  Private
 const createPost = asyncHandler(async (req, res) => {
-    const { text, image, author, groupId } = req.body;
+    const { isAnonymous, text, image, author, groupId } = req.body;
 
     try {
-        const post = await postService.createPost(text, image, author, groupId);
+        const post = await postService.createPost(isAnonymous, text, image, author, groupId);
         res.status(201).json(post);
     } catch (error) {
         res.status(400).json({ error: error.message });

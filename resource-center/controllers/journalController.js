@@ -18,9 +18,8 @@ const addJournal = asyncHandler(async (req, res) => {
 // @route   DELETE /journals/delete/:id
 // @access  Private
 const deleteJournal = asyncHandler(async (req, res) => {
-  const { journalId } = req.params;
+  const { userId, journalId } = req.params;
 
-  // Ensure that only the user who created the journal can delete it
   const journal = await Journal.findByIdAndDelete(journalId);
 
   if (!journal) {
@@ -28,7 +27,9 @@ const deleteJournal = asyncHandler(async (req, res) => {
     throw new Error("Journal not found or unauthorized to delete");
   }
 
-  res.json({ success: true, message: "Journal deleted successfully" });
+  const journals = await Journal.find({ createdBy: userId });
+
+  res.status(200).json({ data: journals });
 });
 
 // @desc    Get all journals of a specific user
