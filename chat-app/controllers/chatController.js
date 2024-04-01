@@ -13,34 +13,37 @@ const accessChat = asyncHandler(async (req, res) => {
     return res.sendStatus(400);
   }
 
-  var isChat = await Chat.find({
-    $and: [
-      { users: { $elemMatch: { $eq: req.user._id } } },
-      { users: { $elemMatch: { $eq: userId } } },
+  var isChat = await Chat.findOne({
+    $or: [
+      { users: { $all: [req.user._id, userId] } },
+      { users: { $all: [userId, req.user._id] } },
     ],
-  })
-    .populate("users", "-password")
-    .populate("latestMessage");
-
-  isChat = await User.populate(isChat, {
-    path: "latestMessage.sender",
-    select: "name image email",
+  }).populate({
+    path: "latestMessage",
+    populate: {
+      path: "sender",
+      select: "name image email",
+    },
   });
 
-  if (isChat.length > 0) {
-    res.send(isChat[0]);
+  if (isChat) {
+    res.send(isChat);
   } else {
+    var senderType = req.user instanceof User ? "User" : "Therapist";
     var chatData = {
-      chatName: "sender",
+      chatName: senderType === "User" ? "User Chat" : "Therapist Chat",
       users: [req.user._id, userId],
     };
 
     try {
       const createdChat = await Chat.create(chatData);
-      const FullChat = await Chat.findOne({ _id: createdChat._id }).populate(
-        "users",
-        "-password"
-      );
+      const FullChat = await Chat.findOne({ _id: createdChat._id }).populate("users", "-password").populate({
+        path: "latestMessage",
+        populate: {
+          path: "sender",
+          select: "name image email",
+        },
+      });
       res.status(200).json(FullChat);
     } catch (error) {
       res.status(400);
@@ -49,20 +52,26 @@ const accessChat = asyncHandler(async (req, res) => {
   }
 });
 
+
 //@description     Fetch all chats for a user
 //@route           GET /api/chat/
 //@access          Protected
 const fetchChats = asyncHandler(async (req, res) => {
   try {
-    Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
-      .populate("users", "-password")
-      .populate("latestMessage")
-      .sort({ updatedAt: -1 })
-      .then(async (results) => {
-        results = await User.populate(results, {
-          path: "latestMessage.sender",
+    Chat.find({ users: req.user._id })
+      .populate([
+        { path: "users", select: "-password" },
+        { path: "users", model: "Therapist" }
+      ])
+      .populate({
+        path: "latestMessage",
+        populate: {
+          path: "sender",
           select: "name image email",
-        });
+        },
+      })
+      .sort({ updatedAt: -1 })
+      .then((results) => {
         res.status(200).send(results);
       });
   } catch (error) {

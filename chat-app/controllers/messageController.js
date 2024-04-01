@@ -9,7 +9,10 @@ const Chat = require("../models/chatModel");
 const allMessages = asyncHandler(async (req, res) => {
   try {
     const messages = await Message.find({ chat: req.params.chatId })
-      .populate("sender", "name pic email")
+      .populate({
+        path: "sender",
+        // select: "name image email",
+      })
       .populate("chat");
     res.json(messages);
   } catch (error) {
@@ -29,8 +32,11 @@ const sendMessage = asyncHandler(async (req, res) => {
     return res.sendStatus(400);
   }
 
+  var senderType = req.user instanceof User ? "User" : "Therapist";
+
   var newMessage = {
     sender: req.user._id,
+    senderType: senderType,
     content: content,
     chat: chatId,
   };
@@ -38,16 +44,20 @@ const sendMessage = asyncHandler(async (req, res) => {
   try {
     var message = await Message.create(newMessage);
 
-    message = await message.populate("sender", "name pic").execPopulate();
-    message = await message.populate("chat").execPopulate();
-    message = await User.populate(message, {
-      path: "chat.users",
-      select: "name pic email",
+    message = await message.populate({
+      path: "sender",
     });
+    message = await message.populate("chat");
 
-    await Chat.findByIdAndUpdate(req.body.chatId, { latestMessage: message });
+    await Chat.findByIdAndUpdate(chatId, { latestMessage: message });
 
-    res.json(message);
+    const messages = await Message.find({ chat: chatId })
+      .populate({
+        path: "sender",
+        // select: "name image email",
+      })
+      .populate("chat");
+    res.json(messages);
   } catch (error) {
     res.status(400);
     throw new Error(error.message);
