@@ -16,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // mount points
 app.use("/therapist", require("./routes/therapistRoutes"));
+app.use("/therapist/auth", require("./routes/authRoutes"));
 
 app.listen(port, () =>
   console.log(`Server running on port: ${port}`.cyan.italic.bold)

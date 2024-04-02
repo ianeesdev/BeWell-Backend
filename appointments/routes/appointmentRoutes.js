@@ -9,7 +9,7 @@ const {
 const { protect } = require("../middleware/authMiddleware");
 
 // Add new appointment
-router.post("/add", addAppointment);
+router.post("/add/:userId", addAppointment);
 
 // Get all appointments
 router.get("/:userId", getAppointments);

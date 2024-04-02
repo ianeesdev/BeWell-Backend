@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
+const Therapist = require("../models/therapistModel");
 const { config } = require("../config/settings");
 
 const protect = async (req, res, next) => {
@@ -18,6 +19,10 @@ const protect = async (req, res, next) => {
 
       // Get user from the token
       req.user = await User.findById(decoded.id).select("-password");
+
+      if (req.user === null) {
+        req.user = await Therapist.findById(decoded.id).select("-password");
+      }
 
       next();
     } catch (error) {

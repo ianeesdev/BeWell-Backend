@@ -58,6 +58,7 @@ const accessChat = asyncHandler(async (req, res) => {
 //@access          Protected
 const fetchChats = asyncHandler(async (req, res) => {
   try {
+
     Chat.find({ users: req.user._id })
       .populate([
         { path: "users", select: "-password" },
