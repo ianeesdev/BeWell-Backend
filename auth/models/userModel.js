@@ -49,6 +49,20 @@ const userSchema = new mongoose.Schema(
         title: String,
         selectedOption: String,
       }
+    ],
+    assessmentTests: [
+      {
+        testName: String,
+        score: Number,
+        prediction: String,
+        date: Date,
+        userResponses: [
+          {
+            questionText: String,
+            selectedOptionText: String
+          }
+        ]
+      }
     ]
   },
   {
