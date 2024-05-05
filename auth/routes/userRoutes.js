@@ -7,7 +7,9 @@ const {
   forgotPassword,
   resetPassword,
   getUser,
-  saveOnboardingResponses
+  saveOnboardingResponses,
+  addTestResult,
+  getTestsHistroy
 } = require("../controllers/userController");
 require("../passport");
 const { protect } = require("../middleware/authMiddleware");
@@ -18,6 +20,8 @@ router.post("/forgot-password", forgotPassword);
 router.post("/resetPassword", resetPassword);
 router.get("/getUser", protect, getUser);
 router.post("/onboardingResponses", protect, saveOnboardingResponses)
+router.post("/addTestResult", protect, addTestResult)
+router.get("/getTestsHistroy", protect, getTestsHistroy);
 
 // For Google account login
 router.get(

@@ -87,11 +87,42 @@ const saveOnboardingResponses = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Save user test information
+// @route   POST /auth/addTestResult
+// @access  Private
+const addTestResult = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const { testName, score, prediction, date, userResponses  } = req.body;
+
+  try {
+    const response = await userService.addTestResult(userId, testName, score, prediction, date, userResponses);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// @desc    Get test history
+// @route   POST /auth/getTestsHistroy
+// @access  Private
+const getTestsHistroy = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const response = await userService.getTestsHistroy(userId);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 module.exports = {
   registerUser,
   loginUser,
   resetPassword,
   forgotPassword,
   getUser,
-  saveOnboardingResponses
+  saveOnboardingResponses,
+  addTestResult,
+  getTestsHistroy
 };

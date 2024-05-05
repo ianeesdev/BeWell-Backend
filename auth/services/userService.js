@@ -143,6 +143,48 @@ class UserService {
     };
   }
 
+  //  Add test results
+  async addTestResult(
+    userId,
+    testName,
+    score,
+    prediction,
+    date,
+    userResponses
+  ) {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const assessmentTest = {
+      testName,
+      score,
+      prediction,
+      date,
+      userResponses,
+    };
+
+    user.assessmentTests.push(assessmentTest);
+    await user.save();
+
+    return { success: true };
+  }
+
+  // Get user tests history
+  async getTestsHistroy(userId) {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return {
+      testsHistory: user.assessmentTests,
+    };
+  }
+
   // Generate OTP service
   async generateOTP(user) {
     // Generate a random 4-digit OTP
