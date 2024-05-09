@@ -54,6 +54,7 @@ class UserService {
         email: user.email,
         isLoggedIn: true,
         onboarded: user.onboarded,
+        groups: user.groups.length,
         token: this.generateToken(user._id),
       };
     } else {
@@ -117,6 +118,7 @@ class UserService {
       email: user.email,
       isLoggedIn: true,
       onboarded: user.onboarded,
+      groups: user.groups.length,
       token: this.generateToken(user._id),
     };
   }
@@ -139,6 +141,7 @@ class UserService {
       email: user.email,
       isLoggedIn: true,
       onboarded: user.onboarded,
+      groups: user.groups.length,
       token: this.generateToken(user._id),
     };
   }

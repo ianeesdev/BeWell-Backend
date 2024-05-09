@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
-  isAnonymous: Boolean,
+  isAnonymous: { type: Boolean, default: false },
   text: { type: String, required: true },
   image: String,
   author: {

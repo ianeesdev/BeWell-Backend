@@ -60,7 +60,9 @@ const addCommentToPost = asyncHandler(async (req, res) => {
       commentText,
       userId
     );
-    res.status(201).json(comment);
+
+    const updatedPost = await postService.fetchPostById(postId);
+    res.status(201).json(updatedPost);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
