@@ -107,7 +107,7 @@ class UserService {
 
   // Get User info service
   async getUser(id) {
-    const user = await User.findById(id);
+    const user = await User.findOne({ _id: id });
 
     if (!user) {
       throw new Error("Invalid credentials");

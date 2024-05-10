@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
+      required: [true, "Please add a strong password"],
     },
     posts: [
       {

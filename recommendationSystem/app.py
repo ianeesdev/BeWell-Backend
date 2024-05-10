@@ -1,5 +1,3 @@
-# Import necessary modules
-from bson import ObjectId
 from pymongo import MongoClient
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -27,6 +25,8 @@ post_text_matrix = tfidf.fit_transform(posts_df['text'])
 # Implement recommendation algorithm, use cosine similarity for content-based filtering
 cosine_sim = linear_kernel(post_text_matrix, post_text_matrix)
 
+
+from bson import ObjectId
 # Generate recommendations
 def get_recommendations(user_id, cosine_sim=cosine_sim, n=5):
     # Convert string user ID to BSON ObjectId
@@ -47,26 +47,9 @@ def get_recommendations(user_id, cosine_sim=cosine_sim, n=5):
     sim_scores = sim_scores[:n]
     post_indices = [i[0] for i in sim_scores]
     
-    # Return list of post objects with all required data
-    recommended_posts = []
-    for idx in post_indices:
-        post_data = posts_df.iloc[idx]
-        author_id = post_data["author"]
-        author_data = users_collection.find_one({"_id": author_id})
-        comments = post_data.get("comment", [])
-        if author_data:
-            recommended_posts.append({
-                "_id": str(post_data["_id"]),
-                "isAnonymous": bool(post_data["isAnonymous"]),
-                "text": post_data["text"],
-                "author": {
-                    "_id": str(author_id),
-                    "username": author_data["username"]
-                },
-                "comment": comments
-            })
-    
-    return recommended_posts
+    # Return list of post IDs
+    return [posts_df.iloc[idx]["_id"] for idx in post_indices]
+
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -76,13 +59,21 @@ CORS(app)
 @app.route("/recommendations")
 def recommendations():
     user_id = request.args.get("user_id")
-    try:
-        recommended_posts = get_recommendations(user_id)
-        return jsonify(recommended_posts)
-    except Exception as e:
-        error_message = {"error": str(e)}
-        print(error_message)
-        return jsonify(error_message), 500
+    recommended_post_ids = get_recommendations(user_id)
+    
+    # Retrieve post objects from DataFrame using post indices
+    recommended_posts = [posts_collection.find_one({"_id": ObjectId(post_id)}) for post_id in recommended_post_ids]
+    
+    # Convert the list of recommended posts to a JSON format
+    recommended_posts_json = []
+    for post in recommended_posts:
+        post_dict = {
+            "_id": str(post["_id"]),
+            "text": post["text"],
+        }
+        recommended_posts_json.append(post_dict)
+    
+    return jsonify(recommended_posts_json)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5011)

@@ -6,12 +6,14 @@ const {
   fetchPostById,
   addCommentToPost,
 } = require("../controllers/postController");
+
 const {
   createGroup,
   fetchGroupPosts,
   addMemberToGroup,
   removeUserFromGroup,
   deleteGroup,
+  fetchGroups,
 } = require("../controllers/groupController");
 
 router.post("/createPost", createPost);
@@ -20,6 +22,7 @@ router.get("/fetchPost/:id", fetchPostById);
 router.post("/addCommentToPost/:postId", addCommentToPost);
 
 router.post("/addGroup", createGroup);
+router.get("/fetchGroups", fetchGroups);
 router.get("/fetchGroupPosts/:id", fetchGroupPosts);
 router.post("/addGroupMember", addMemberToGroup);
 router.post("/removeUser", removeUserFromGroup);

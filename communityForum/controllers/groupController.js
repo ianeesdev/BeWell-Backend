@@ -15,7 +15,19 @@ const createGroup = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc    Fetch all groups
+// @route   GET /community/fetchGroups
+// @access  Private
+const fetchGroups = asyncHandler(async (req, res) => {
 
+    try {
+        const groups = await groupService.fetchGroups();
+        res.status(200).json(groups);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+ 
 // @desc    Fetch group posts
 // @route   GET /community/fetchGroupPosts/:id
 // @access  Private
@@ -81,5 +93,6 @@ module.exports = {
     fetchGroupPosts,
     addMemberToGroup,
     removeUserFromGroup,
-    deleteGroup
+    deleteGroup,
+    fetchGroups
 }

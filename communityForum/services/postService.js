@@ -69,7 +69,7 @@ class PostService {
         .populate({
           path: "author",
           model: User,
-          select: "_id name image",
+          select: "_id username name image",
         }) // Populate the author field with _id and username
         .populate({
           path: "group",
@@ -82,7 +82,7 @@ class PostService {
             {
               path: "author", // Populate the author field within comment
               model: User,
-              select: "_id name parentId image", // Select only _id and username fields of the author
+              select: "_id username name parentId image", // Select only _id and username fields of the author
             },
             {
               path: "comment", // Populate the comment field within comment
@@ -90,7 +90,7 @@ class PostService {
               populate: {
                 path: "author", // Populate the author field within nested comment
                 model: User,
-                select: "_id name parentId image", // Select only _id and username fields of the author
+                select: "_id username name parentId image", // Select only _id and username fields of the author
               },
             },
           ],

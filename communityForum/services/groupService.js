@@ -34,6 +34,16 @@ class GroupService {
     }
   }
 
+  async fetchGroups() {
+    try {
+      const allGroups = await Group.find({});
+      return allGroups;
+    } catch (error) {
+      console.error("Error fetching group posts:", error);
+      throw error;
+    }
+  }
+
   async fetchGroupPosts(id) {
     try {
       const groupPosts = await Group.findById(id).populate({
@@ -43,7 +53,7 @@ class GroupService {
           {
             path: "author",
             model: User,
-            select: "name image id",
+            select: "username name image _id",
           },
           {
             path: "comment",
@@ -94,7 +104,9 @@ class GroupService {
       user.groups.push(group._id);
       await user.save();
 
-      return group;
+      const updatedGroups = this.fetchGroups();
+
+      return updatedGroups
     } catch (error) {
       // Handle any errors
       console.error("Error adding member to group:", error);
@@ -104,8 +116,8 @@ class GroupService {
 
   async removeUserFromGroup(userId, groupId) {
     try {
-      const userIdObject = await User.findOne({ id: userId }, { _id: 1 });
-      const groupIdObject = await Group.findOne({ id: groupId }, { _id: 1 });
+      const userIdObject = await User.findOne({ _id: userId }, { _id: 1 });
+      const groupIdObject = await Group.findOne({ _id: groupId }, { _id: 1 });
 
       if (!userIdObject) {
         throw new Error("User not found");
@@ -127,7 +139,9 @@ class GroupService {
         { $pull: { groups: groupIdObject._id } }
       );
 
-      return { success: true };
+      const updatedGroups = this.fetchGroups();
+
+      return updatedGroups
     } catch (error) {
       // Handle any errors
       console.error("Error removing user from group:", error);
