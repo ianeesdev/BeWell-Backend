@@ -50,6 +50,14 @@ class AuthService {
         _id: therapist.id,
         name: therapist.username,
         email: therapist.email,
+        speciality: therapist.specialty,
+        about: therapist.about,
+        hourlyRate: therapist.hourlyRate,
+        totalPatients: therapist.totalPatients,
+        experience: therapist.experience,
+        location: therapist.location,
+        stripeId: therapist.stripeId,
+        cardNumber: therapist.cardNumber,
         isLoggedIn: true,
         onboarded: therapist.onboarded,
         token: this.generateToken(therapist._id),
@@ -66,10 +74,19 @@ class AuthService {
     if (!therapist) {
       throw new Error("Invalid credentials");
     }
+
     return {
       _id: therapist.id,
       name: therapist.username,
       email: therapist.email,
+      speciality: therapist.specialty,
+      about: therapist.about,
+      hourlyRate: therapist.hourlyRate,
+      totalPatients: therapist.totalPatients,
+      experience: therapist.experience,
+      location: therapist.location,
+      stripeId: therapist.stripeId,
+      cardNumber: therapist.cardNumber,
       isLoggedIn: true,
       onboarded: therapist.onboarded,
       token: this.generateToken(therapist._id),
@@ -85,7 +102,9 @@ class AuthService {
     location,
     totalPatients,
     experience,
-    hourlyRate
+    hourlyRate,
+    stripeId,
+    cardNumber,
   ) {
     const therapist = await Therapist.findById(therapistId);
 
@@ -100,14 +119,31 @@ class AuthService {
     therapist.totalPatients = totalPatients;
     therapist.experience = experience;
     therapist.location = location;
+    
+    if (stripeId) {
+      therapist.stripeId = stripeId
+    }
+
+    if (cardNumber) {
+      therapist.cardNumber = cardNumber;
+    }
+
     therapist.onboarded = true;
 
     await therapist.save();
 
     return {
       _id: therapist.id,
-      name: therapist.name,
+      name: therapist.username,
       email: therapist.email,
+      speciality: therapist.specialty,
+      about: therapist.about,
+      hourlyRate: therapist.hourlyRate,
+      totalPatients: therapist.totalPatients,
+      experience: therapist.experience,
+      location: therapist.location,
+      stripeId: therapist.stripeId,
+      cardNumber: therapist.cardNumber,
       isLoggedIn: true,
       onboarded: therapist.onboarded,
       token: this.generateToken(therapist._id),

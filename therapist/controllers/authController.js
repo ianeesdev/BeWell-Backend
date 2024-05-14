@@ -56,6 +56,8 @@ const saveProfile = asyncHandler(async (req, res) => {
     totalPatients,
     experience,
     hourlyRate,
+    stripeId,
+    cardNumber,
   } = req.body;
 
   try {
@@ -67,7 +69,9 @@ const saveProfile = asyncHandler(async (req, res) => {
       location,
       totalPatients,
       experience,
-      hourlyRate
+      hourlyRate,
+      stripeId,
+      cardNumber,
     );
     res.status(200).json(response);
   } catch (error) {

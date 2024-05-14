@@ -7,12 +7,13 @@ const Therapist = require("../models/therapistModel");
 // @access  Private
 const addAppointment = asyncHandler(async (req, res) => {
   const { userId } = req.params;
-  const { therapistId, dateTime } = req.body;
+  const { therapistId, dateTime, amount } = req.body;
 
   const appointment = await Appointment.create({
     userId,
     therapistId,
     dateTime,
+    amount,
   });
 
   const appointments = await fetchAppointments(userId);
@@ -39,11 +40,9 @@ const getAppointments = asyncHandler(async (req, res) => {
       dateTime: { $lt: new Date() }, // Find appointments with dateTime less than current date
     }).populate("userId");
 
-    res
-      .status(200)
-      .json({
-        data: { upcoming: upcomingAppointments, history: historyAppointments },
-      });
+    res.status(200).json({
+      data: { upcoming: upcomingAppointments, history: historyAppointments },
+    });
   } else {
     res.status(200).json({ data: appointments });
   }

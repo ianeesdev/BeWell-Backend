@@ -14,7 +14,8 @@ const appointmentSchema = new mongoose.Schema({
   dateTime: {
     type: Date,
     required: true
-  }
+  },
+  amount: Number
 });
 
 const Appointment = mongoose.model('Appointment', appointmentSchema);
