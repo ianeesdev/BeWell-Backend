@@ -7,7 +7,12 @@ const Therapist = require("../models/therapistModel");
 // @access  Private
 const addAppointment = asyncHandler(async (req, res) => {
   const { userId } = req.params;
-  const { therapistId, dateTime, amount } = req.body;
+  const { therapistId, dateTime } = req.body;
+  var amount;
+
+  const therapist = await Therapist.findOne({ _id: therapistId });
+
+  if (therapist) amount = therapist.hourlyRate;
 
   const appointment = await Appointment.create({
     userId,

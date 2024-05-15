@@ -3,10 +3,10 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema(
   {
     googleId: String,
-    username: { 
-        type: String, 
-        required: true, 
-        unique: true 
+    username: {
+      type: String,
+      required: true,
+      unique: true,
     },
     name: {
       type: String,
@@ -22,7 +22,6 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, "Please add a strong password"],
     },
     posts: [
       {
@@ -42,14 +41,34 @@ const userSchema = new mongoose.Schema(
     ],
     sessionId: {
       type: String,
-      default: "hi"
+      default: "hi",
     },
     onboardingResponses: [
       {
         title: String,
         selectedOption: String,
-      }
-    ]
+      },
+    ],
+    assessmentTests: [
+      {
+        testName: String,
+        score: Number,
+        prediction: String,
+        date: Date,
+        userResponses: [
+          {
+            questionText: String,
+            selectedOptionText: String,
+          },
+        ],
+      },
+    ],
+    videoAnalysisResults: [
+      {
+        depressionPercentage: String,
+        dominantEmotion: String,
+      },
+    ],
   },
   {
     timestamps: true,

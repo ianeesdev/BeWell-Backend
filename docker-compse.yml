@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  appointments:
+    build: ./appointments
+    ports:
+      - "3000:5001"
+
+  auth:
+    build: ./auth
+    ports:
+      - "3001:5000"
+
+  chat-app:
+    build: ./chat-app
+    ports:
+      - "3002:5009"
+
+  community-forum:
+    build: ./communityForum
+    ports:
+      - "3003:5003"
+
+  resource-center:
+    build: ./resource-center
+    ports:
+      - "3005:5004"
+
+  server:
+    build: ./server
+    ports:
+      - "3006:5007"
+
+  therapist:
+    build: ./therapist
+    ports:
+      - "3007:5005"

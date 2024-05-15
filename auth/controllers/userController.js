@@ -62,7 +62,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 // @route   POST /auth/reset-password
 // @access  Public
 const getUser = asyncHandler(async (req, res) => {
-  const id = req.user.id;
+  const id = req.user._id;
 
   try {
     const user = await userService.getUser(id);
@@ -116,6 +116,35 @@ const getTestsHistroy = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Save user video analysis result
+// @route   POST /auth/addAnalysisResult
+// @access  Private
+const addAnalysisResult = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const { depressionPercentage, dominantEmotion  } = req.body;
+
+  try {
+    const response = await userService.addAnalysisResult(userId, depressionPercentage, dominantEmotion);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// @desc    Get analysis history
+// @route   POST /auth/getAnalysisHistroy
+// @access  Private
+const getAnalysisHistroy = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const response = await userService.getAnalysisHistroy(userId);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -124,5 +153,7 @@ module.exports = {
   getUser,
   saveOnboardingResponses,
   addTestResult,
-  getTestsHistroy
+  getTestsHistroy,
+  addAnalysisResult,
+  getAnalysisHistroy
 };

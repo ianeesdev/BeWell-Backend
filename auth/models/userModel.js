@@ -3,10 +3,10 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema(
   {
     googleId: String,
-    username: { 
-        type: String, 
-        required: true, 
-        unique: true 
+    username: {
+      type: String,
+      required: true,
+      
     },
     name: {
       type: String,
@@ -41,13 +41,13 @@ const userSchema = new mongoose.Schema(
     ],
     sessionId: {
       type: String,
-      default: "hi"
+      default: "hi",
     },
     onboardingResponses: [
       {
         title: String,
         selectedOption: String,
-      }
+      },
     ],
     assessmentTests: [
       {
@@ -58,11 +58,18 @@ const userSchema = new mongoose.Schema(
         userResponses: [
           {
             questionText: String,
-            selectedOptionText: String
-          }
-        ]
-      }
-    ]
+            selectedOptionText: String,
+          },
+        ], 
+      },
+    ],
+    videoAnalysisResults: [
+      {
+        date: Date,
+        depressionPercentage: String,
+        dominantEmotion: String,
+      },
+    ],
   },
   {
     timestamps: true,

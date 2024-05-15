@@ -13,6 +13,7 @@ const {
 } = require("../controllers/userController");
 require("../passport");
 const { protect } = require("../middleware/authMiddleware");
+const { addAnalysisResult, getAnalysisHistroy } = require("../services/userService");
 
 router.post("/signup", registerUser);
 router.post("/login", loginUser);
@@ -22,6 +23,8 @@ router.get("/getUser", protect, getUser);
 router.post("/onboardingResponses", protect, saveOnboardingResponses)
 router.post("/addTestResult", protect, addTestResult)
 router.get("/getTestsHistroy", protect, getTestsHistroy);
+router.post("/addAnalysisResult", protect, addAnalysisResult)
+router.get("/getAnalysisHistroy", protect, getAnalysisHistroy);
 
 // For Google account login
 router.get(

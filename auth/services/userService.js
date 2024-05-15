@@ -188,6 +188,39 @@ class UserService {
     };
   }
 
+    //  Add test results
+    async addAnalysisResult(
+      userId, depressionPercentage, dominantEmotion
+    ) {
+      const user = await User.findById(userId);
+  
+      if (!user) {
+        throw new Error("User not found");
+      }
+  
+      const videoAnalysis = {
+        depressionPercentage, dominantEmotion
+      };
+  
+      user.videoAnalysisResults.push(videoAnalysis);
+      await user.save();
+  
+      return { success: true };
+    }
+  
+    // Get user tests history
+    async getAnalysisHistroy(userId) {
+      const user = await User.findById(userId);
+  
+      if (!user) {
+        throw new Error("User not found");
+      }
+  
+      return {
+        testsHistory: user.videoAnalysisResults,
+      };
+    }
+
   // Generate OTP service
   async generateOTP(user) {
     // Generate a random 4-digit OTP

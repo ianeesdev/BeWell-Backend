@@ -22,7 +22,6 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, "Please add a strong password"],
     },
     posts: [
       {
@@ -48,6 +47,26 @@ const userSchema = new mongoose.Schema(
       {
         title: String,
         selectedOption: String,
+      },
+    ],
+    assessmentTests: [
+      {
+        testName: String,
+        score: Number,
+        prediction: String,
+        date: Date,
+        userResponses: [
+          {
+            questionText: String,
+            selectedOptionText: String,
+          },
+        ],
+      },
+    ],
+    videoAnalysisResults: [
+      {
+        depressionPercentage: String,
+        dominantEmotion: String,
       },
     ],
   },
