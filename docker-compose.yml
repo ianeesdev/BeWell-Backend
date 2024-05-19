@@ -4,7 +4,7 @@ services:
   appointments:
     build: ./appointments
     ports:
-      - "3000:5001"
+      - "3000:5001" 
 
   auth:
     build: ./auth
