@@ -1,14 +1,31 @@
 const asyncHandler = require("express-async-handler");
 const authService = require("../services/authService");
 
-// @desc    Register new user
+// @desc    Register new therapist
 // @route   POST /auth/signup
 // @access  Public
 const registerTherapist = asyncHandler(async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, cnic } = req.body;
+  const {
+    educationCertificates,
+    professionalLicense,
+    professionalMemberships,
+    experienceCertificates,
+    criminalRecordCheck,
+  } = req.files;
 
   try {
-    const user = await authService.registerTherapist(username, email, password);
+    const user = await authService.registerTherapist(
+      username,
+      email,
+      password,
+      cnic,
+      educationCertificates,
+      professionalLicense,
+      professionalMemberships,
+      experienceCertificates,
+      criminalRecordCheck
+    );
     res.status(201).json(user);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -71,7 +88,7 @@ const saveProfile = asyncHandler(async (req, res) => {
       experience,
       hourlyRate,
       stripeId,
-      cardNumber,
+      cardNumber
     );
     res.status(200).json(response);
   } catch (error) {

@@ -5,9 +5,19 @@ const { config } = require("../config/settings");
 
 class AuthService {
   // Register service
-  async registerTherapist(username, email, password) {
+  async registerTherapist(
+    username,
+    email,
+    password,
+    cnic,
+    educationCertificates,
+    professionalLicense,
+    professionalMemberships,
+    experienceCertificates,
+    criminalRecordCheck
+  ) {
     if (!username || !email || !password) {
-      throw new Error("Please add all fields");
+      throw new Error("Please add all required fields");
     }
 
     const userExists = await Therapist.findOne({ email });
@@ -18,10 +28,31 @@ class AuthService {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Extract filenames from uploaded files
+    const educationCertificatesFiles = educationCertificates
+      ? educationCertificates.map((file) => file.filename)
+      : [];
+    const professionalMembershipsFiles = professionalMemberships
+      ? professionalMemberships.map((file) => file.filename)
+      : [];
+    const experienceCertificatesFiles = experienceCertificates
+      ? experienceCertificates.map((file) => file.filename)
+      : [];
+
     const therapist = await new Therapist({
       username,
       email,
+      cnic,
       password: hashedPassword,
+      educationCertificates: educationCertificatesFiles,
+      professionalLicense: professionalLicense
+        ? professionalLicense[0].filename
+        : null,
+      professionalMemberships: professionalMembershipsFiles,
+      experienceCertificates: experienceCertificatesFiles,
+      criminalRecordCheck: criminalRecordCheck
+        ? criminalRecordCheck[0].filename
+        : null,
     }).save();
 
     if (therapist) {
@@ -45,7 +76,7 @@ class AuthService {
 
     const passwordMatched = bcrypt.compare(password, therapist.password);
 
-    if (passwordMatched) {
+    if (passwordMatched && therapist.verified) {
       return {
         _id: therapist.id,
         name: therapist.username,
@@ -104,7 +135,7 @@ class AuthService {
     experience,
     hourlyRate,
     stripeId,
-    cardNumber,
+    cardNumber
   ) {
     const therapist = await Therapist.findById(therapistId);
 
@@ -119,9 +150,9 @@ class AuthService {
     therapist.totalPatients = totalPatients;
     therapist.experience = experience;
     therapist.location = location;
-    
+
     if (stripeId) {
-      therapist.stripeId = stripeId
+      therapist.stripeId = stripeId;
     }
 
     if (cardNumber) {

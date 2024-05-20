@@ -13,6 +13,9 @@ const therapistSchema = new Schema({
   image: {
     type: String,
   },
+  cnic: {
+    type: String,
+  },
   email: {
     type: String,
     required: [true, "Please add an email"],
@@ -47,16 +50,33 @@ const therapistSchema = new Schema({
   },
   cardNumber: String,
   stripeId: String,
+  verified: Boolean,
+  // New fields for storing filenames of uploaded documents
+  educationCertificates: [{
+    type: String,
+  }],
+  professionalLicense: {
+    type: String,
+  },
+  professionalMemberships: [{
+    type: String,
+  }],
+  experienceCertificates: [{
+    type: String,
+  }],
+  criminalRecordCheck: {
+    type: String,
+  },
   reviews: [{
-      reviewerName: {
-          type: String,
-      },
-      rating: {
-          type: Number,
-      },
-      comment: {
-          type: String,
-      }
+    reviewerName: {
+      type: String,
+    },
+    rating: {
+      type: Number,
+    },
+    comment: {
+      type: String,
+    }
   }]
 });
 
