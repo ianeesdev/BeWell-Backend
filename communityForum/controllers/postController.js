@@ -68,9 +68,24 @@ const addCommentToPost = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Delete a post
+// @route   DELETE /community/deletePost/:postId
+// @access  Private
+const deletePost = asyncHandler(async (req, res) => {
+  const postId = req.params.postId;
+
+  try {
+    await postService.deletePost(postId);
+    res.status(200).json({ message: "Post deleted successfully" });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 module.exports = {
   createPost,
   fetchPosts,
   fetchPostById,
   addCommentToPost,
+  deletePost
 };

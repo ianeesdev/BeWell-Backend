@@ -50,7 +50,7 @@ class PostService {
           populate: {
             path: "author", // Populate the author field within children
             model: User,
-            select: "_id name parentId"
+            select: "_id name parentId",
           },
         });
 
@@ -134,6 +134,42 @@ class PostService {
     } catch (err) {
       console.error("Error while adding comment:", err);
       throw new Error("Unable to add comment");
+    }
+  }
+
+  async deletePost(postId) {
+    try {
+      // Find the post by ID
+      const post = await Post.findById(postId);
+
+      if (!post) {
+        throw new Error("Post not found");
+      }
+
+      // Delete all comments associated with the post
+      await this.deleteComments(post.comment);
+
+      // Delete the post itself
+      await post.deleteOne();
+
+      return true;
+    } catch (error) {
+      throw new Error(`Failed to delete post: ${error.message}`);
+    }
+  }
+
+  async deleteComments(commentIds) {
+    try {
+      // Delete all comments recursively
+      for (const commentId of commentIds) {
+        const comment = await Post.findById(commentId);
+        if (comment) {
+          await this.deleteComments(comment.comment); // Delete child comments first
+          await comment.remove(); // Then delete the comment itself
+        }
+      }
+    } catch (error) {
+      throw new Error(`Failed to delete comments: ${error.message}`);
     }
   }
 }
