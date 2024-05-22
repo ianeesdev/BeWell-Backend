@@ -20,7 +20,9 @@ const {
 const {
   addReport,
   fetchReports,
-  fetchReportById
+  fetchReportById,
+  removePostAndReport,
+  removeUserAndReport,
 } = require("../controllers/reportController");
 
 router.post("/createPost", createPost);
@@ -40,5 +42,9 @@ router.delete("/deleteGroup/:id", deleteGroup);
 router.post("/addReport", addReport);
 router.get("/fetchReports", fetchReports);
 router.get("/fetchReport/:reportId", fetchReportById);
+
+router.delete("/removePostAndReport/:postId/:reportId", removePostAndReport);
+router.delete("/removeUserAndReport/:userId/:reportId", removeUserAndReport);
+
 
 module.exports = router;
