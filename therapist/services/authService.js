@@ -75,7 +75,7 @@ class AuthService {
       throw new Error("Invalid email");
     }
 
-    const passwordMatched = bcrypt.compare(password, therapist.password);
+    const passwordMatched = await bcrypt.compare(password, therapist.password);
 
     if (passwordMatched && therapist.verified) {
       return {

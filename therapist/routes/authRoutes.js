@@ -43,6 +43,6 @@ router.post("/signup", upload.fields([
 
 router.post("/login", loginTherapist);
 router.get("/getUser", protect, getTherapist);
-router.post("/profile", protect, saveProfile);
+router.post("/profile", saveProfile);
 
 module.exports = router;
