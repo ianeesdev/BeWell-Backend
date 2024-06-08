@@ -22,6 +22,7 @@ class UserService {
 
     const user = await new User({
       username,
+      name: username,
       email,
       password: hashedPassword,
     }).save();
@@ -42,10 +43,10 @@ class UserService {
     const user = await User.findOne({ email });
 
     if (!user) {
-      throw new Error("Invalid credentials");
+      throw new Error("Invalid email address!");
     }
 
-    const passwordMatched = bcrypt.compare(password, user.password);
+    const passwordMatched = await bcrypt.compare(password, user.password);
 
     if (passwordMatched) {
       return {
@@ -58,7 +59,7 @@ class UserService {
         token: this.generateToken(user._id),
       };
     } else {
-      throw new Error("Invalid credentials");
+      throw new Error("Invalid password!");
     }
   }
 

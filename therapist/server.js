@@ -15,6 +15,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/static", express.static(__dirname + "/uploads"));
 
+app.use((err, req, res, next) => {
+  res.status(err.status || 500).json({ message: err.message || "Internal Server Error" });
+});
+
 // mount points
 app.use("/therapist/auth", require("./routes/authRoutes"));
 app.use("/therapist", require("./routes/therapistRoutes"));

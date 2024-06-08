@@ -41,6 +41,7 @@ class AuthService {
 
     const therapist = await new Therapist({
       username,
+      name: username,
       email,
       cnic,
       password: hashedPassword,
@@ -71,7 +72,7 @@ class AuthService {
     const therapist = await Therapist.findOne({ email });
 
     if (!therapist) {
-      throw new Error("Invalid credentials");
+      throw new Error("Invalid email");
     }
 
     const passwordMatched = bcrypt.compare(password, therapist.password);
@@ -94,7 +95,7 @@ class AuthService {
         token: this.generateToken(therapist._id),
       };
     } else {
-      throw new Error("Invalid credentials");
+      throw new Error("Invalid password");
     }
   }
 
